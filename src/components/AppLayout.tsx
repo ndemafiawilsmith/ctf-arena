@@ -9,9 +9,9 @@ import ChallengeBoard from '@/components/challenges/ChallengeBoard';
 import Leaderboard from '@/components/scoreboard/Leaderboard';
 import AdminDashboard from '@/components/admin/AdminDashboard';
 import UserProfile from '@/components/profile/UserProfile';
-import { 
-  Terminal, Shield, Trophy, Users, Zap, Target, 
-  LogOut, User, ChevronRight, Github, Twitter, 
+import {
+  Terminal, Shield, Trophy, Users, Zap, Target,
+  LogOut, User, ChevronRight, Github, Twitter,
   Flag, Code, Lock, Unlock, Menu, X
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -29,85 +29,11 @@ const EVENT_IMAGES = [
 
 
 
-// Demo events for display
-const DEMO_EVENTS: CTFEvent[] = [
-  {
-    id: 'demo-1',
-    name: 'CyberStrike 2025',
-    description: 'The ultimate web exploitation challenge. Test your skills against real-world vulnerabilities.',
-    start_time: new Date(Date.now() + 86400000).toISOString(),
-    end_time: new Date(Date.now() + 86400000 * 3).toISOString(),
-    is_paid: true,
-    price: 49.99,
-    cover_image_url: EVENT_IMAGES[0],
-    is_active: true,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 'demo-2',
-    name: 'Binary Blitz',
-    description: 'Reverse engineering and binary exploitation. Crack the code, own the system.',
-    start_time: new Date().toISOString(),
-    end_time: new Date(Date.now() + 86400000 * 7).toISOString(),
-    is_paid: false,
-    price: 0,
-    cover_image_url: EVENT_IMAGES[1],
-    is_active: true,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 'demo-3',
-    name: 'Crypto Chaos',
-    description: 'Cryptographic challenges from basic ciphers to advanced cryptanalysis.',
-    start_time: new Date().toISOString(),
-    end_time: new Date(Date.now() + 86400000 * 5).toISOString(),
-    is_paid: true,
-    price: 29.99,
-    cover_image_url: EVENT_IMAGES[2],
-    is_active: true,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 'demo-4',
-    name: 'Forensics Frontier',
-    description: 'Digital forensics investigation. Analyze evidence, uncover the truth.',
-    start_time: new Date(Date.now() - 86400000).toISOString(),
-    end_time: new Date(Date.now() + 86400000 * 2).toISOString(),
-    is_paid: false,
-    price: 0,
-    cover_image_url: EVENT_IMAGES[3],
-    is_active: true,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 'demo-5',
-    name: 'Network Nemesis',
-    description: 'Network penetration testing challenges. Exploit, pivot, and escalate.',
-    start_time: new Date(Date.now() + 86400000 * 10).toISOString(),
-    end_time: new Date(Date.now() + 86400000 * 12).toISOString(),
-    is_paid: true,
-    price: 79.99,
-    cover_image_url: EVENT_IMAGES[4],
-    is_active: true,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 'demo-6',
-    name: 'OSINT Olympics',
-    description: 'Open source intelligence gathering. Find the hidden, expose the secrets.',
-    start_time: new Date().toISOString(),
-    end_time: new Date(Date.now() + 86400000 * 4).toISOString(),
-    is_paid: false,
-    price: 0,
-    cover_image_url: EVENT_IMAGES[5],
-    is_active: true,
-    created_at: new Date().toISOString()
-  },
-];
-
 const MainContent: React.FC = () => {
   const { user, profile, signOut, loading: authLoading } = useAuth();
-  const [events, setEvents] = useState<CTFEvent[]>(DEMO_EVENTS);
+  const [events, setEvents] = useState<CTFEvent[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
+
   const [userAccess, setUserAccess] = useState<EventAccess[]>([]);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showRedeemModal, setShowRedeemModal] = useState(false);
@@ -119,26 +45,43 @@ const MainContent: React.FC = () => {
 
   useEffect(() => {
     fetchEvents();
+
     if (user) {
       fetchUserAccess();
+    } else {
+      setUserAccess([]);
     }
   }, [user]);
 
+
+
   const fetchEvents = async () => {
+    if (authLoading) return;
+
+    setEventsLoading(true);
+
     const { data, error } = await supabase
       .from('ctf_events')
       .select('*')
       .eq('is_active', true)
       .order('start_time', { ascending: true });
 
-    if (!error && data && data.length > 0) {
-      setEvents(data);
+    if (error) {
+      console.error('Failed to fetch events:', error.message);
+      toast.error('Failed to load events');
+      setEvents([]);
+    } else {
+      setEvents(data ?? []);
     }
+
+    setEventsLoading(false);
   };
+
+
 
   const fetchUserAccess = async () => {
     if (!user) return;
-    
+
     const { data, error } = await supabase
       .from('event_access')
       .select('*')
@@ -451,15 +394,26 @@ const MainContent: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map(event => (
-              <EventCard
-                key={event.id}
-                event={event}
-                hasAccess={hasAccess(event.id)}
-                onJoin={() => handleEventClick(event)}
-              />
-            ))}
+            {eventsLoading ? (
+              <div className="col-span-full text-center text-gray-400 font-mono">
+                LOADING_EVENTS...
+              </div>
+            ) : events.length === 0 ? (
+              <div className="col-span-full text-center text-gray-400 font-mono">
+                NO_ACTIVE_EVENTS_FOUND
+              </div>
+            ) : (
+              events.map(event => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  hasAccess={hasAccess(event.id)}
+                  onJoin={() => handleEventClick(event)}
+                />
+              ))
+            )}
           </div>
+
         </div>
       </section>
 

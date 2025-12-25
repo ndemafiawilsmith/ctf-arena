@@ -2,8 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 
 
 // Initialize database client
-const supabaseUrl = 'https://sfmwcfoztoetelymcnyo.databasepad.com';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjJlMTI1ZTJmLTk3OGYtNGM0ZC1iZDgxLTYwZWNlOTE1YmJjZCJ9.eyJwcm9qZWN0SWQiOiJzZm13Y2ZvenRvZXRlbHltY255byIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzY2NjE1MTI4LCJleHAiOjIwODE5NzUxMjgsImlzcyI6ImZhbW91cy5kYXRhYmFzZXBhZCIsImF1ZCI6ImZhbW91cy5jbGllbnRzIn0.EF7A88oGWUIVRN_v-taUU_E8fQTROz6IpDuI-NQGCx4';
+const supabaseUrl = 'https://eykuqjstzpdxbplqhsfy.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5a3VxanN0enBkeGJwbHFoc2Z5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2MDM0MjcsImV4cCI6MjA4MjE3OTQyN30.Z4kRCRs1orQsWXh8yU5SMR-DkBpdBGTW0Ig7cgvyPKI';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 
