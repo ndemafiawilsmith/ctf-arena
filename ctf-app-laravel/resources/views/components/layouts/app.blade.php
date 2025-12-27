@@ -11,11 +11,12 @@
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-[#0d0015]">
       @include('layouts.navigation')
-      
+
       <main>
           {{ $slot }}
       </main>
     </div>
+    @livewire('auth-modal')
     @livewireScripts
 </body>
 </html>

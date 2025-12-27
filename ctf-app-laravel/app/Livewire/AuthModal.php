@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Livewire\Attributes\On;
 
 class AuthModal extends Component
 {
@@ -18,10 +19,16 @@ class AuthModal extends Component
     public string $error = '';
     public bool $loading = false;
 
-    protected $listeners = ['openAuthModal'];
+    // protected $listeners = ['openAuthModal'];
 
+    #[On('openAuthModal')]
     public function openAuthModal($mode = 'login')
     {
+        // Handle array payload (named parameters)
+        if (is_array($mode) && isset($mode['mode'])) {
+            $mode = $mode['mode'];
+        }
+        
         $this->resetState();
         $this->mode = $mode;
         $this->isOpen = true;
@@ -91,7 +98,7 @@ class AuthModal extends Component
         $this->closeModal();
         return redirect()->intended('/');
     }
-    
+
     public function resetState()
     {
         $this->reset(['email', 'password', 'username', 'showPassword', 'error', 'loading']);

@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('challenges', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('ctf_event_id')->constrained('ctf_events')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('ctf_event_id')->constrained('ctf_events')->onDelete('cascade');
             $table->string('title');
             $table->text('description');
             $table->string('category');

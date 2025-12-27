@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CtfEvent extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $fillable = [
         'name',
@@ -18,6 +19,19 @@ class CtfEvent extends Model
         'price',
         'cover_image_url',
         'is_active',
+        'is_rewarded',
+        'first_prize',
+        'second_prize',
+        'third_prize',
+        'sponsor',
+    ];
+
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+        'is_paid' => 'boolean',
+        'is_active' => 'boolean',
+        'is_rewarded' => 'boolean',
     ];
 
     /**
@@ -26,5 +40,10 @@ class CtfEvent extends Model
     public function challenges()
     {
         return $this->hasMany(Challenge::class);
+    }
+
+    public function accesses()
+    {
+        return $this->hasMany(EventAccess::class);
     }
 }
