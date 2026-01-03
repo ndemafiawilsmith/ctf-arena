@@ -1,5 +1,5 @@
 <div wire:keydown.escape.window="closeModal">
-    @if($isOpen)
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isOpen): ?>
     <div x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" wire:click="closeModal"></div>
         <div class="relative bg-gradient-to-br from-[#1a0b2e] to-[#0d0015] border border-[#00ff41]/30 rounded-lg p-8 w-full max-w-md shadow-2xl shadow-[#00ff41]/10" @click.stop>
@@ -16,59 +16,81 @@
                     <line x1="12" y1="19" x2="20" y2="19"></line>
                 </svg>
                 <h2 class="text-2xl font-mono font-bold text-white">
-                    @if ($mode === 'login')
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($mode === 'login'): ?>
                     ACCESS_TERMINAL
-                    @elseif ($mode === 'signup')
+                    <?php elseif($mode === 'signup'): ?>
                     CREATE_IDENTITY
-                    @else
+                    <?php else: ?>
                     RECOVER_ACCESS
-                    @endif
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </h2>
             </div>
 
             <form wire:submit.prevent="submit" class="space-y-4">
-                @if ($mode === 'signup')
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($mode === 'signup'): ?>
                 <div>
                     <label class="block text-[#00ff41] font-mono text-sm mb-2">USERNAME</label>
                     <input type="text" wire:model.defer="username" class="w-full bg-black/50 border border-[#00ff41]/30 rounded px-4 py-3 text-white font-mono focus:border-[#00ff41] focus:outline-none focus:ring-1 focus:ring-[#00ff41]/50 transition-all" placeholder="h4ck3r_name" required>
-                    @error('username') <span class="text-red-500 text-xs font-mono mt-1 block">{{ $message }}</span> @enderror
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['username'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-xs font-mono mt-1 block"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </div>
-                @endif
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                 <div>
                     <label class="block text-[#00ff41] font-mono text-sm mb-2">EMAIL</label>
                     <input type="email" wire:model.defer="email" class="w-full bg-black/50 border border-[#00ff41]/30 rounded px-4 py-3 text-white font-mono focus:border-[#00ff41] focus:outline-none focus:ring-1 focus:ring-[#00ff41]/50 transition-all" placeholder="user@domain.com" required>
-                    @error('email') <span class="text-red-500 text-xs font-mono mt-1 block">{{ $message }}</span> @enderror
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-xs font-mono mt-1 block"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </div>
 
-                @if ($mode !== 'forgot-password')
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($mode !== 'forgot-password'): ?>
                 <div>
                     <label class="block text-[#00ff41] font-mono text-sm mb-2">PASSWORD</label>
                     <div class="relative">
-                        <input type="{{ $showPassword ? 'text' : 'password' }}" wire:model.defer="password" class="w-full bg-black/50 border border-[#00ff41]/30 rounded px-4 py-3 text-white font-mono focus:border-[#00ff41] focus:outline-none focus:ring-1 focus:ring-[#00ff41]/50 transition-all pr-12" placeholder="••••••••" required>
+                        <input type="<?php echo e($showPassword ? 'text' : 'password'); ?>" wire:model.defer="password" class="w-full bg-black/50 border border-[#00ff41]/30 rounded px-4 py-3 text-white font-mono focus:border-[#00ff41] focus:outline-none focus:ring-1 focus:ring-[#00ff41]/50 transition-all pr-12" placeholder="••••••••" required>
                         <button type="button" wire:click="togglePasswordVisibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#00ff41]">
-                            @if ($showPassword)
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($showPassword): ?>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
                                 <line x1="1" y1="1" x2="23" y2="23"></line>
                             </svg>
-                            @else
+                            <?php else: ?>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                             </svg>
-                            @endif
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </button>
                     </div>
-                    @error('password') <span class="text-red-500 text-xs font-mono mt-1 block">{{ $message }}</span> @enderror
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-xs font-mono mt-1 block"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </div>
-                @endif
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                @if ($error)
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($error): ?>
                 <div class="bg-red-500/10 border border-red-500/30 rounded p-3 text-red-400 text-sm font-mono">
-                    ERROR: {{ $error }}
+                    ERROR: <?php echo e($error); ?>
+
                 </div>
-                @endif
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                 <button type="submit" wire:loading.attr="disabled" class="w-full bg-[#00ff41] text-black font-mono font-bold py-3 rounded hover:bg-[#00ff41]/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                     <div wire:loading wire:target="submit">
@@ -85,36 +107,36 @@
                         <span>PROCESSING...</span>
                     </div>
                     <div wire:loading.remove wire:target="submit">
-                        @if ($mode === 'login')
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($mode === 'login'): ?>
                         LOGIN
-                        @elseif ($mode === 'signup')
+                        <?php elseif($mode === 'signup'): ?>
                         REGISTER
-                        @else
+                        <?php else: ?>
                         SEND LINK
-                        @endif
+                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </div>
                 </button>
             </form>
 
             <div class="mt-6 text-center space-y-2">
-                @if ($mode === 'login')
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($mode === 'login'): ?>
                 <button wire:click="switchMode('signup')" class="block w-full text-gray-400 hover:text-[#00ff41] font-mono text-sm transition-colors">
                     Need an account? REGISTER
                 </button>
                 <button wire:click="switchMode('forgot-password')" class="block w-full text-gray-500 hover:text-[#00ff41] font-mono text-xs transition-colors">
                     Forgot Password?
                 </button>
-                @elseif ($mode === 'signup')
+                <?php elseif($mode === 'signup'): ?>
                 <button wire:click="switchMode('login')" class="block w-full text-gray-400 hover:text-[#00ff41] font-mono text-sm transition-colors">
                     Have an account? LOGIN
                 </button>
-                @else
+                <?php else: ?>
                 <button wire:click="switchMode('login')" class="block w-full text-gray-400 hover:text-[#00ff41] font-mono text-sm transition-colors">
                     Back to LOGIN
                 </button>
-                @endif
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </div>
         </div>
     </div>
-    @endif
-</div>
+    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+</div><?php /**PATH D:\security-monetize-challenge\resources\views/livewire/auth-modal.blade.php ENDPATH**/ ?>

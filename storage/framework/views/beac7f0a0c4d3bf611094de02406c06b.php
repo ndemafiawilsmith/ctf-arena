@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <title>CTF Arena</title> -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
+    <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::styles(); ?>
 
-    {{-- Primary Meta Tags --}}
+
+    
     <title>CTF Arena - Nigeria's Premier Capture The Flag Cybersecurity Platform | Compete & Win</title>
     <meta name="title" content="CTF Arena - Nigeria's Premier Capture The Flag Cybersecurity Platform | Compete & Win">
     <meta name="description" content="Join Africa's leading CTF (Capture The Flag) platform. Compete in elite cybersecurity challenges, hack real vulnerabilities, win cash prizes, and level up your hacking skills. Powered by TryHackMe.">
@@ -18,7 +19,7 @@
     <meta name="googlebot" content="index, follow">
     <link rel="canonical" href="https://ctf.cyberwilsmith.com.ng">
 
-    {{-- Geo Tags for Nigeria/Africa targeting --}}
+    
     <meta name="geo.region" content="NG">
     <meta name="geo.placename" content="Nigeria">
     <meta name="geo.position" content="9.0820;8.6753">
@@ -28,7 +29,7 @@
     <meta name="distribution" content="global">
     <meta name="target" content="Nigeria, Africa, Ghana, Kenya, South Africa, Egypt">
 
-    {{-- Open Graph / Facebook --}}
+    
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ctf.cyberwilsmith.com.ng">
     <meta property="og:title" content="CTF Arena - Nigeria's Premier Capture The Flag Platform">
@@ -42,7 +43,7 @@
     <meta property="og:locale:alternate" content="en_US">
     <meta property="og:locale:alternate" content="en_GB">
 
-    {{-- Twitter Cards --}}
+    
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://ctf.cyberwilsmith.com.ng">
     <meta name="twitter:title" content="CTF Arena - Nigeria's Premier Capture The Flag Platform">
@@ -51,11 +52,11 @@
     <meta name="twitter:creator" content="@ctfarena">
     <meta name="twitter:site" content="@ctfarena">
 
-    {{-- Favicon --}}
+    
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 
-    {{-- Theme Color --}}
+    
     <meta name="theme-color" content="#0d0015">
     <meta name="msapplication-TileColor" content="#0d0015">
 
@@ -65,14 +66,35 @@
 
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-[#0d0015]">
-        @include('layouts.navigation')
+        <?php echo $__env->make('layouts.navigation', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
         <main>
-            {{ $slot }}
+            <?php echo e($slot); ?>
+
         </main>
     </div>
-    @livewire('auth-modal')
-    @livewireScripts
+    <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('auth-modal');
+
+$key = null;
+
+$key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-1257449174-0', null);
+
+$__html = app('livewire')->mount($__name, $__params, $key);
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+    <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::scripts(); ?>
+
 </body>
 
-</html>
+</html><?php /**PATH D:\security-monetize-challenge\resources\views/components/layouts/app.blade.php ENDPATH**/ ?>
