@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class EventCheckout extends Component
 {
@@ -19,11 +20,11 @@ class EventCheckout extends Component
 
     public function pay()
     {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
         $amountInKobo = $this->event->price * 100; // Paystack expects amount in kobo
         $email = $user->email;
         $reference = \Illuminate\Support\Str::uuid();

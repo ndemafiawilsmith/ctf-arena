@@ -28,7 +28,7 @@ class AuthModal extends Component
         if (is_array($mode) && isset($mode['mode'])) {
             $mode = $mode['mode'];
         }
-        
+
         $this->resetState();
         $this->mode = $mode;
         $this->isOpen = true;
@@ -44,39 +44,64 @@ class AuthModal extends Component
         $this->showPassword = !$this->showPassword;
     }
 
-    public function switchMode()
+    public function switchMode($mode = null)
     {
-        $this->mode = $this->mode === 'login' ? 'signup' : 'login';
+        if ($mode) {
+            $this->mode = $mode;
+        } else {
+            $this->mode = $this->mode === 'login' ? 'signup' : 'login';
+        }
         $this->reset('error');
+    }
+
+    public function submit()
+    {
+        $this->reset('error');
+
+        if ($this->mode === 'login') {
+            $this->login();
+        } elseif ($this->mode === 'signup') {
+            $this->register();
+        } else {
+            $this->sendPasswordResetLink();
+        }
     }
 
     public function handleSubmit()
     {
-        $this->reset('error');
-        $this->loading = true;
+        $this->submit();
+    }
 
-        if ($this->mode === 'login') {
-            $this->login();
+    public function sendPasswordResetLink()
+    {
+        $this->validate([
+            'email' => 'required|email',
+        ]);
+
+        $status = \Illuminate\Support\Facades\Password::sendResetLink(['email' => $this->email]);
+
+        if ($status === \Illuminate\Support\Facades\Password::RESET_LINK_SENT) {
+            $this->closeModal();
+            // Optional: Dispatch a success notification or show a message
+            // For now, simpler is better for "hacker" aesthetic
         } else {
-            $this->register();
+            $this->addError('email', __($status));
         }
-
-        $this->loading = false;
     }
 
     public function login()
     {
-        $credentials = [
-            'email' => $this->email,
-            'password' => $this->password,
-        ];
+        $this->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
             $this->closeModal();
-            return redirect()->intended('/');
-        } else {
-            $this->error = 'Invalid credentials.';
+            return redirect()->intended(route('dashboard'));
         }
+
+        $this->addError('email', 'These credentials do not match our records.');
     }
 
     public function register()
@@ -93,10 +118,12 @@ class AuthModal extends Component
             'password' => Hash::make($this->password),
         ]);
 
+        event(new \Illuminate\Auth\Events\Registered($user));
+
         Auth::login($user);
 
         $this->closeModal();
-        return redirect()->intended('/');
+        return redirect()->route('dashboard');
     }
 
     public function resetState()

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class CtfEvents extends Component
 {
@@ -13,7 +14,7 @@ class CtfEvents extends Component
     {
         $this->events = \App\Models\CtfEvent::where('is_active', true)
             ->with(['accesses' => function ($query) {
-                $query->where('user_id', auth()->id())->where('status', 'success');
+                $query->where('user_id', Auth::id())->where('status', 'success');
             }])
             ->orderBy('start_time', 'asc')
             ->get();

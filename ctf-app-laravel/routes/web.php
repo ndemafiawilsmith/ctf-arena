@@ -9,9 +9,9 @@ use App\Livewire\ChallengeBoard;
 use App\Http\Controllers\ChallengeController;
 
 Route::get('/', CtfEvents::class)->name('ctf-events');
-Route::get('/ctf/{event}', CtfEvent::class)->name('ctf-event');
+// Route::get('/ctf/{event}', CtfEvent::class)->name('ctf-event');
 // Route::get('/challenges', ChallengeBoard::class)->name('challenge-board');
-Route::get('/ctf/{event}', CtfEvent::class)->name('ctf-event');
+Route::get('/ctf/{event}/challenges', ChallengeBoard::class)->name('ctf-event.challenges');
 Route::get('/events/{event}', \App\Livewire\EventDetails::class)->name('event.details');
 Route::get('/events/{event}/checkout', \App\Livewire\EventCheckout::class)->name('event.checkout');
 Route::get('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'callback'])->name('payment.callback');
@@ -27,4 +27,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

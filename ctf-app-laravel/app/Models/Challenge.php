@@ -19,12 +19,15 @@ class Challenge extends Model
         'points',
         'external_link',
         'flag_hash',
+        'is_dynamic',
+        'flag_seed',
         'hints',
         'is_active',
     ];
 
     protected $casts = [
         'hints' => 'array',
+        'is_dynamic' => 'boolean',
     ];
 
     /**

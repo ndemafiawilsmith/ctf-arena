@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class ChallengeBoard extends Component
 {
@@ -25,7 +26,7 @@ class ChallengeBoard extends Component
 
     public function submitFlag($challengeId)
     {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             $this->dispatch('error', message: 'You must be logged in.');
             return;
         }
@@ -33,7 +34,7 @@ class ChallengeBoard extends Component
         $flag = $this->flags[$challengeId] ?? '';
         if (empty($flag)) return;
 
-        $user = auth()->user();
+        $user = Auth::user();
         $challenge = \App\Models\Challenge::find($challengeId);
 
         if (!$challenge) return;
@@ -48,20 +49,34 @@ class ChallengeBoard extends Component
             return;
         }
 
-        $submittedHash = hash('sha256', $flag);
-
-        if ($submittedHash === $challenge->flag_hash) {
-            \App\Models\Solve::create([
-                'user_id' => $user->id,
-                'challenge_id' => $challenge->id,
-            ]);
-
-            $this->dispatch('success', message: "Correct flag! +{$challenge->points} points");
-            // Clear input
-            $this->flags[$challengeId] = '';
+        if ($challenge->is_dynamic) {
+            $expectedFlag = 'CTF{' . substr(hash('sha256', $challenge->flag_seed . $user->id), 0, 12) . '}';
+            if ($flag === $expectedFlag) {
+                $this->solveChallenge($user, $challenge);
+            } else {
+                $this->dispatch('error', message: 'Incorrect flag.');
+            }
         } else {
-            $this->dispatch('error', message: 'Incorrect flag.');
+            $submittedHash = hash('sha256', $flag);
+
+            if ($submittedHash === $challenge->flag_hash) {
+                $this->solveChallenge($user, $challenge);
+            } else {
+                $this->dispatch('error', message: 'Incorrect flag.');
+            }
         }
+    }
+
+    protected function solveChallenge($user, $challenge)
+    {
+        \App\Models\Solve::create([
+            'user_id' => $user->id,
+            'challenge_id' => $challenge->id,
+        ]);
+
+        $this->dispatch('success', message: "Correct flag! +{$challenge->points} points");
+        // Clear input
+        $this->flags[$challenge->id] = '';
     }
 
     public function setFilter($category)
@@ -71,9 +86,9 @@ class ChallengeBoard extends Component
 
     public function calculateUserScore()
     {
-        if (!auth()->check()) return 0;
-        
-        return \App\Models\Solve::where('user_id', auth()->id())
+        if (!Auth::check()) return 0;
+
+        return \App\Models\Solve::where('user_id', Auth::id())
             ->join('challenges', 'solves.challenge_id', '=', 'challenges.id')
             ->where('challenges.ctf_event_id', $this->event->id)
             ->sum('challenges.points');
@@ -114,7 +129,7 @@ class ChallengeBoard extends Component
         // 3. Helper calculations
         $totalPoints = $allChallenges->sum('points');
         $this->userScore = $this->calculateUserScore();
-        
+
         $categories = $allChallenges->pluck('category')->unique()->values()->all();
         $categories = array_merge(['All'], $categories);
         // Default categories if none exist yet, just for UI stability
@@ -122,8 +137,8 @@ class ChallengeBoard extends Component
 
         // 4. Get Solved Status for valid user
         $solvedChallengeIds = [];
-        if (auth()->check()) {
-            $solvedChallengeIds = \App\Models\Solve::where('user_id', auth()->id())
+        if (Auth::check()) {
+            $solvedChallengeIds = \App\Models\Solve::where('user_id', Auth::id())
                 ->whereIn('challenge_id', $allChallenges->pluck('id'))
                 ->pluck('challenge_id')
                 ->toArray();
@@ -135,6 +150,6 @@ class ChallengeBoard extends Component
             'totalPoints' => $totalPoints,
             'solvedChallengeIds' => $solvedChallengeIds,
             'leaderboard' => $this->activeTab === 'leaderboard' ? $this->getLeaderboard() : []
-        ])->layout('layouts.challenge', ['title' => $this->event->name . ' - CTF Arena']); 
+        ])->layout('layouts.challenge', ['title' => $this->event->name . ' - CTF Arena']);
     }
 }
