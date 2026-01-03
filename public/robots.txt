@@ -1,2 +1,41 @@
+# https://www.robotstxt.org/robotstxt.html
+
+# Allow all crawlers
 User-agent: *
-Disallow:
+Allow: /
+
+# Sitemap location
+Sitemap: https://ctf.cyberwilsmith.com.ng/sitemap.xml
+
+# Block admin and authenticated routes
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /login
+Disallow: /register
+Disallow: /password
+Disallow: /email
+Disallow: /api/
+
+# Block storage and build directories
+Disallow: /storage/
+Disallow: /build/
+
+# Allow critical assets
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Allow: /fonts/
+
+# Crawl delay for politeness (seconds)
+Crawl-delay: 1
+
+# Google specific
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing specific
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
